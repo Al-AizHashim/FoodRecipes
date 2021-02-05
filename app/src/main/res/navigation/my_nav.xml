@@ -10,4 +10,9 @@
         android:name="alaiz.hashim.foodrecipes.RecipesFragment"
         android:label="fragment_recipes"
         tools:layout="@layout/fragment_recipes" />
+    <fragment
+        android:id="@+id/favoriteFragment"
+        android:name="alaiz.hashim.foodrecipes.FavoriteFragment"
+        android:label="fragment_favorite"
+        tools:layout="@layout/fragment_favorite" />
 </navigation>
