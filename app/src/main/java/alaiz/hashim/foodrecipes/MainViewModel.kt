@@ -30,7 +30,7 @@ class MainViewModel @ViewModelInject constructor(
         if (hasInternetConnection()) {
             try {
                 val response = repository.remote.getRecipes(queries)
-               // recipesResponse.value =
+                recipesResponse.value = handleFoodRecipesResponse(response)
 
 
             } catch (e: Exception) {
@@ -41,6 +41,26 @@ class MainViewModel @ViewModelInject constructor(
         }
     }
 
+    private fun handleFoodRecipesResponse(response: Response<FoodRecipe>): NetworkResult<FoodRecipe>? {
+        when {
+            response.message().toString().contains("timeout") -> {
+                return NetworkResult.Error("Timeout")
+            }
+            response.code() == 402 -> {
+                return NetworkResult.Error("API Key Limited.")
+            }
+            response.body()!!.results.isNullOrEmpty() -> {
+                return NetworkResult.Error("Recipes not found.")
+            }
+            response.isSuccessful -> {
+                val foodRecipes = response.body()
+                return NetworkResult.Success(foodRecipes!!)
+            }
+            else -> {
+                return NetworkResult.Error(response.message())
+            }
+        }
+    }
 
     private fun hasInternetConnection(): Boolean {
         val connectivityManager = getApplication<Application>().getSystemService(
